@@ -1,2 +1,2 @@
-# aria
-Projeto de Inteligência Artificial baseada em Python para a matéria Projeto Integrador Internet das Coisas II da Fatec Pompéia.
+# Projeto: Aria
+Projeto de Interface Interativa em React que utiliza processamento de linguagem natural para compreender solicitações do usuário e buscar dinamicamente uma resposta adequada, a intenção principal é utilizar Python para fazer Webscraping e API REST com Django Framework para fazer a comunicação da interface web com o serviço python e trazer um dinanismo server-side com a praticidade de uma interface limpa e clara e componentizada para eficiência.
