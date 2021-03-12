@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 from flask_cors import CORS, cross_origin
 from Processor import response
 import json
+import os
 
 app = Flask("pond")
 app.config['CORS_HEADERS'] = 'Content-Type'
@@ -64,4 +65,6 @@ def CotacaoCepea1(tipo):
                       "nota": nota})
   return str(retorno)
 
-app.run()
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
