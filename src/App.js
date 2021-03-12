@@ -34,8 +34,16 @@ export default function App() {
   const [messages, setMessage] = useState([])
   const [msgCount, setCount] = useState(0);
 
-  useEffect(() => {
-    respond("Olá!");
+  // useEffect(() => {
+  //   respond("Olá!");
+  // }, []);
+
+  
+  useEffect(async () => {
+    const result = await fetch('https://api.github.com/');
+    const data = await result.json()
+    console.log(data)
+    respond(JSON.stringify(data));
   }, []);
 
   const voice = config.tts ? new Speech() : null;
@@ -81,9 +89,6 @@ export default function App() {
   }
 
   function respond(e) {
-    voice && voice.speak({
-      text: e,
-    })
     setCount(msgCount + 1);
     if (e !== "") {
       var newMessages = messages;
@@ -96,6 +101,9 @@ export default function App() {
     } else {
       alert("Erro na resposta!");
     }
+    voice && voice.speak({
+      text: e,
+    })
   }
   sprecog.onresult = function(event) {
     for (let i = event.resultIndex; i < event.results.length; i++) {
