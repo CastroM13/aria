@@ -16,8 +16,8 @@ const AnimationBot = styled.div`
 `;
 
 export function renderMessages(messages) {
-  return <div className="messagebox">
-  {messages.map((e)=> {
+  return <div id="messagebox" className="messagebox">
+  {messages && messages.map((e)=> {
     return <div className={e.sender === "Aria" ? "messageLineBot" : "messageLineUser"}>
       {e.sender === "Aria" ? <AnimationBot className="messageBot">{e.message}</AnimationBot> : <AnimationUser className="messageUser">{e.message}</AnimationUser>}
     </div>

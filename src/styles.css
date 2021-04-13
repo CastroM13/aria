@@ -18,6 +18,10 @@ body {
   box-sizing: border-box;
 }
 
+.bold {
+  font-weight: bold;
+}
+
 .chatbox {
   background-image: url('https://image.freepik.com/free-vector/seamless-pattern_1159-5086.jpg');
   position: relative;
