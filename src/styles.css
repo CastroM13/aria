@@ -73,10 +73,16 @@ body {
 }
 
 .chatbox > #chatHeader > p {
-  height: 4em;
   width: 4em;
   float: left;
   border-radius: 100%;
+}
+
+.chatbox > #chatHeader > p > span {
+  color: rgb(199, 199, 199);
+  font-size: 0.8em;
+  margin-top: -1.5em !important; 
+  padding-left: .5em; 
 }
 
 #microphone {
@@ -196,6 +202,21 @@ body {
   margin: 0.1em;
   border-radius: 15px 15px 0px 15px;
   right: 0;
+}
+
+.loading {
+  overflow: hidden;
+  padding: 0 !important;
+  padding-bottom: -10px !important;
+  height: 3em !important;
+  width: 4.75em;
+  padding-left: .5em !important;
+}
+
+.loading > img {
+  transform: scale(2, 2);
+  filter: invert(0.175) saturate(0) !important;
+  height: 2.75em !important;
 }
 
 .messagebox::last-child {

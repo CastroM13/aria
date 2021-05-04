@@ -30,12 +30,33 @@ const defaultConfig = {
 
 export default function App() {
   const [config, setConfig] = useState(defaultConfig);
+  const [availability, setAvailability] = useState("Offline")
   const [state, setState] = useState("off");
-  const [loaded, setLoaded] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [messages, setMessage] = useState([]);
   const [msgCount, setCount] = useState(0);
 
+  useEffect(() => {
+    document.getElementById("messagebox").scrollTop = document.getElementById("messagebox").scrollHeight;
+  }, [loading]);
+
+  useEffect(() => {
+    checkAvailability();
+  }, [])
+
+  const checkAvailability = async () => {
+    await fetch(`http://localhost:5000/`)
+      .then(() => {
+        setAvailability("Online");
+      })
+      .catch((e) => {
+        console.log('e', e);
+        setAvailability("Offline");
+      })
+  }
+
   const apiDialog = async (message) => {
+    setLoading(true);
     await fetch(`http://localhost:5000/mensagem/${message}`)
       .then(function(response) {
         return response.text();
@@ -55,35 +76,18 @@ export default function App() {
             </>
           )
         })
+        setLoading(false);
       })
+      setLoading(false);
   }
-
-  const voice = config.tts ? new Speech() : null;
   sprecog.interimResults = true;
   sprecog.lang = config.lang;
   sprecog.continuous = config.continuous;
 
-  voice && voice.init({
-    'volume': 1,
-      'lang': 'pt-BR',
-      'rate': 1,
-      'pitch': 0.9,
-      'voice':'Google português do Brasil',
-  }).catch(e => {
-    alert("Ocorreu um erro ao inicializar o TTS : ", e)
-  })
-
   function addMessage(e, user) {
-    setLoaded(true);
     var newMessages = messages;
     newMessages.push({id: messages.index + 1, sender: user, message: e})
     setMessage(newMessages);
-  }
-  
-  function speak(e) {
-    voice && voice.speak({
-      text: e,
-    })
   }
 
   function userMessage(e) {
@@ -104,9 +108,7 @@ export default function App() {
   function ariaMessage(e) {
     if (e !== "") {
       addMessage(e, "Aria")
-      setLoaded(false);
       setCount(msgCount + 1);
-      document.getElementById("messagebox").scrollTop = document.getElementById("messagebox").scrollHeight;
       if (state === "on") {
         sprecog.stop()
         setState("off")
@@ -125,7 +127,6 @@ export default function App() {
     }
   };
 
-  // deprecated voice recognition reload method
   function cycleAi() {
     if (state === "off") {
       sprecog.abort();
@@ -167,14 +168,6 @@ export default function App() {
           <option value="pt-BR">Português Brasileiro</option>
         </select>
       </p>
-      <p>
-        Mensagem de voz rápida: 
-        <input className="configOption" type="checkbox" defaultValue={config.immediateVoiceSend} />
-      </p>
-      <p>
-        Linguagem: 
-        <input className="configOption" type="checkbox" />
-      </p>
       <input className="configOption" type="submit" value="Salvar alterações"/>
     </form>
 
@@ -189,12 +182,14 @@ export default function App() {
           />
           <div id="chatHeader">
             <img src="https://i.imgur.com/XWnne0i_d.webp?maxwidth=760&fidelity=grand" alt="Imagem da Aria"/>
-            <p>Aria</p>
-          <FaEllipsisV id="configicon" onClick={openConfig} />
+            <p>Aria <br/>
+              <span>{availability}</span>
+            </p>
+            <FaEllipsisV id="configicon" onClick={openConfig} />
           </div>
-          {loaded ? <div>Carregando</div> : null}
-          {renderMessages(messages)}
-          <form autoComplete="off" onSubmit={(e) => {e.preventDefault(); userMessage(e.target.input.value); e.target.input.value = ""; setLoaded(true)}}>
+          {loading ? <div>Carregando</div> : null}
+          {renderMessages(messages, loading)}
+          <form autoComplete="off" onSubmit={(e) => {e.preventDefault(); userMessage(e.target.input.value); e.target.input.value = "";}}>
             <input id="input" placeholder="Diga algo!"/>
             {state === "off" ? <MicrophoneSlashFade id="microphone" onClick={cycleAi}/> : <MicrophoneFade id="microphoneOn" onClick={cycleAi}/>}
             <input id="send" type="submit"/>
